@@ -1,0 +1,128 @@
+double RampSig(int,double,double);
+double PrintMe(double);
+affine fdtd3d { nt,Nx,Ny,Nz,Sx,Sy,Sz | -10 + Nx >= 0  && -10 + Ny >= 0  && -10 + Nz >= 0  && -1 + nt >= 0  }
+	input
+		double f0 {|};
+		double Lf {|};
+		double CF {|};
+		double er_x {|};
+		double er_y {|};
+		double er_z {|};
+		double Lx {|};
+		double Ly {|};
+		double Lz {|};
+		double e0 {|};
+		double u0 {|};
+		double c0 {|};
+		double dx {|};
+		double dy {|};
+		double dz {|};
+		double dt {|};
+	output
+		double Ez { t,i,j,k |  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  t >= 0  &&  -1 + nt - t >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+	local
+		double ex { i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double ey { i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double ez { i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double Ex { t,i,j,k |  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  t >= 0  &&  -1 + nt - t >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double Ey { t,i,j,k |  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  t >= 0  &&  -1 + nt - t >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double Hx { t,i,j,k |  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  t >= 0  &&  -1 + nt - t >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double Hy { t,i,j,k |  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  t >= 0  &&  -1 + nt - t >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double Hz { t,i,j,k |  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  t >= 0  &&  -1 + nt - t >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double Chxey {|};
+		double Chxez {|};
+		double Cexhy { i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double Cexhz { i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double Chyex {|};
+		double Chyez {|};
+		double Ceyhx { i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double Ceyhz { i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double Chzex {|};
+		double Chzey {|};
+		double Cezhx { i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double Cezhy { i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double S { t,i,j,k |  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  t >= 0  &&  -1 + nt - t >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  };
+		double V { t,i,j,k |  t >= 0  &&  -1 + nt - t >= 0  &&  -1 + i >= 0  &&  Nx - i >= 0  &&  -1 + j >= 0  &&  Ny - j >= 0  &&  -1 + k >= 0  &&  Nz - k >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + nt >= 0  };
+	let
+		ex = case 
+			{ i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 - 4Ny + 5j >= 0  } : (i,j,k->)@er_x;
+			{ i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  4Ny - 5j >= 0  } : (i,j,k->)@1;
+		esac;
+		
+		ey = case 
+			{ i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 - 4Ny + 5j >= 0  } : (i,j,k->)@er_y;
+			{ i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  4Ny - 5j >= 0  } : (i,j,k->)@1;
+		esac;
+		
+		ez = case 
+			{ i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 - 4Ny + 5j >= 0  } : (i,j,k->)@er_z;
+			{ i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  4Ny - 5j >= 0  } : (i,j,k->)@1;
+		esac;
+		
+		Chxey = ((->)@dt / ((->)@u0 * (->)@dz));
+		
+		Chxez = ((->)@dt / ((->)@u0 * (->)@dy));
+		
+		Cexhy = ((i,j,k->)@dt / (((i,j,k->)@e0 * (i,j,k->i,j,k)@ex) * (i,j,k->)@dz));
+		
+		Cexhz = ((i,j,k->)@dt / (((i,j,k->)@e0 * (i,j,k->i,j,k)@ex) * (i,j,k->)@dy));
+		
+		Chyex = ((->)@dt / ((->)@u0 * (->)@dz));
+		
+		Chyez = ((->)@dt / ((->)@u0 * (->)@dx));
+		
+		Ceyhx = ((i,j,k->)@dt / (((i,j,k->)@e0 * (i,j,k->i,j,k)@ey) * (i,j,k->)@dz));
+		
+		Ceyhz = ((i,j,k->)@dt / (((i,j,k->)@e0 * (i,j,k->i,j,k)@ey) * (i,j,k->)@dx));
+		
+		Chzex = ((->)@dt / ((->)@u0 * (->)@dy));
+		
+		Chzey = ((->)@dt / ((->)@u0 * (->)@dx));
+		
+		Cezhx = ((i,j,k->)@dt / (((i,j,k->)@e0 * (i,j,k->i,j,k)@ez) * (i,j,k->)@dy));
+		
+		Cezhy = ((i,j,k->)@dt / (((i,j,k->)@e0 * (i,j,k->i,j,k)@ez) * (i,j,k->)@dx));
+		
+		S = case 
+			{ t,i,j,k |  -Sz + k == 0  &&  -Sy + j == 0  &&  -Sx + i == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  } : RampSig(val(t,i,j,k->t), f0, dt);
+			{ t,i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 - Sz + k >= 0  }||{ t,i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + Sz - k >= 0  }||{ t,i,j,k |  -Sz + k == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 - Sy + j >= 0  }||{ t,i,j,k |  -Sz + k == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + Sy - j >= 0  }||{ t,i,j,k |  -Sz + k == 0  &&  -Sy + j == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 - Sx + i >= 0  }||{ t,i,j,k |  -Sz + k == 0  &&  -Sy + j == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + Sx - i >= 0  } : (t,i,j,k->)@0;
+		esac;
+		
+		Hx = case 
+			{ t,i,j,k |  t == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  } : (t,i,j,k->)@0;
+			{ t,i,j,k |  -1 + k == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  }||{ t,i,j,k |  -1 + j == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  }||{ t,i,j,k |  -Ny + j == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  }||{ t,i,j,k |  -Nz + k == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  } : (t,i,j,k->t-1,i,j,k)@Hx;
+			{ t,i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  &&  -2 + j >= 0  &&  -1 + Ny - j >= 0  &&  -2 + k >= 0  &&  -1 + Nz - k >= 0  } : (((t,i,j,k->t-1,i,j,k)@Hx + ((t,i,j,k->)@Chxey * ((t,i,j,k->t-1,i,j,k+1)@Ey - (t,i,j,k->t-1,i,j,k)@Ey))) - ((t,i,j,k->)@Chxez * ((t,i,j,k->t-1,i,j+1,k)@Ez - (t,i,j,k->t-1,i,j,k)@Ez)));
+		esac;
+		
+		Hy = case 
+			{ t,i,j,k |  t == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  } : (t,i,j,k->)@0;
+			{ t,i,j,k |  -1 + k == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  }||{ t,i,j,k |  -1 + i == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  }||{ t,i,j,k |  -Nx + i == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  }||{ t,i,j,k |  -Nz + k == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  } : (t,i,j,k->t-1,i,j,k)@Hy;
+			{ t,i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  &&  -2 + i >= 0  &&  -1 + Nx - i >= 0  &&  -2 + k >= 0  &&  -1 + Nz - k >= 0  } : (((t,i,j,k->t-1,i,j,k)@Hy + ((t,i,j,k->)@Chyez * ((t,i,j,k->t-1,i+1,j,k)@Ez - (t,i,j,k->t-1,i,j,k)@Ez))) - ((t,i,j,k->)@Chyex * ((t,i,j,k->t-1,i,j,k+1)@Ex - (t,i,j,k->t-1,i,j,k)@Ex)));
+		esac;
+		
+		Hz = case 
+			{ t,i,j,k |  t == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  } : (t,i,j,k->)@0;
+			{ t,i,j,k |  -1 + j == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  }||{ t,i,j,k |  -1 + i == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  }||{ t,i,j,k |  -Nx + i == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  }||{ t,i,j,k |  -Ny + j == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  } : (t,i,j,k->t-1,i,j,k)@Hz;
+			{ t,i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  &&  -2 + i >= 0  &&  -1 + Nx - i >= 0  &&  -2 + j >= 0  &&  -1 + Ny - j >= 0  } : (((t,i,j,k->t-1,i,j,k)@Hz + ((t,i,j,k->)@Chzex * ((t,i,j,k->t-1,i,j+1,k)@Ex - (t,i,j,k->t-1,i,j,k)@Ex))) - ((t,i,j,k->)@Chzey * ((t,i,j,k->t-1,i+1,j,k)@Ey - (t,i,j,k->t-1,i,j,k)@Ey)));
+		esac;
+		
+		Ex = case 
+			{ t,i,j,k |  t == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  } : (t,i,j,k->)@0;
+			{ t,i,j,k |  -1 + k == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  }||{ t,i,j,k |  -1 + j == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  } : (t,i,j,k->t-1,i,j,k)@Ex;
+			{ t,i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  &&  -2 + j >= 0  &&  -2 + k >= 0  } : (((t,i,j,k->t-1,i,j,k)@Ex + ((t,i,j,k->i,j,k)@Cexhz * (Hz - (t,i,j,k->t,i,j-1,k)@Hz))) - ((t,i,j,k->i,j,k)@Cexhy * (Hy - (t,i,j,k->t,i,j,k-1)@Hy)));
+		esac;
+		
+		Ey = case 
+			{ t,i,j,k |  t == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  } : (t,i,j,k->)@0;
+			{ t,i,j,k |  -1 + k == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  }||{ t,i,j,k |  -1 + i == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  } : (t,i,j,k->t-1,i,j,k)@Ey;
+			{ t,i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  &&  -2 + i >= 0  &&  -2 + k >= 0  } : (((t,i,j,k->t-1,i,j,k)@Ey + ((t,i,j,k->i,j,k)@Ceyhx * (Hx - (t,i,j,k->t,i,j,k-1)@Hx))) - ((t,i,j,k->i,j,k)@Ceyhz * (Hz - (t,i,j,k->t,i-1,j,k)@Hz)));
+		esac;
+		
+		Ez = case 
+			{ t,i,j,k |  t == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  } : (t,i,j,k->)@0;
+			{ t,i,j,k |  -1 + j == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  }||{ t,i,j,k |  -1 + i == 0  &&  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  } : (t,i,j,k->t-1,i,j,k)@Ez;
+			{ t,i,j,k |  -1 + nt >= 0  &&  -10 + Nx >= 0  &&  -10 + Ny >= 0  &&  -10 + Nz >= 0  &&  -1 + t >= 0  &&  -2 + i >= 0  &&  -2 + j >= 0  } : ((((t,i,j,k->t,i,j,k)@S + (t,i,j,k->t-1,i,j,k)@Ez) + ((t,i,j,k->i,j,k)@Cezhy * (Hy - (t,i,j,k->t,i-1,j,k)@Hy))) - ((t,i,j,k->i,j,k)@Cezhx * (Hx - (t,i,j,k->t,i,j-1,k)@Hx)));
+		esac;
+		
+		V = PrintMe((t,i,j,k->t,i,j,k)@Ez);
+.
